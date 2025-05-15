@@ -1,0 +1,1 @@
+# stockevaluator.ai
