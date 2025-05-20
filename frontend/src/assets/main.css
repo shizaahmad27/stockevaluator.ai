@@ -1,4 +1,8 @@
-@import './base.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles can be added below */
 
 #app {
   max-width: 1280px;
