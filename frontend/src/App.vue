@@ -1,0 +1,21 @@
+<script setup lang="ts">
+import Navbar from './components/layout/Navbar.vue'
+import { Toast } from './components/ui/toast'
+</script>
+
+<template>
+  <Navbar />
+  <router-view />
+  <Toast />
+</template>
+
+<style>
+#app {
+  font-family: Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+}
+</style>
+
+
