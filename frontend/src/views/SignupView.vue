@@ -5,30 +5,26 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 import { User, Mail } from 'lucide-vue-next'
 import { useToast } from '@/components/ui/toast/use-toast'
+import { useRegister } from '@/api/generated/authentication/authentication'
+import type { RegisterResponse, RegisterRequest } from '@/api/generated/model'
+import { useRouter } from 'vue-router'
 
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import PasswordInput from '@/components/auth/PasswordInput.vue'
-import { useRouter } from 'vue-router';
-const router = useRouter();
+
+const router = useRouter()
 
 // Schema for the registration form
 const rawSchema = z
     .object({
-      firstName: z.string({ required_error: 'Fornavn er påkrevd' }).min(2, 'Fornavn må være minst 2 tegn'),
-      lastName: z.string({ required_error: 'Etternavn er påkrevd' }).min(2, 'Etternavn må være minst 2 tegn'),
-      email: z.string({ required_error: 'E-post er påkrevd' }).email('Ugyldig e-post').min(5, 'E-post må være minst 5 tegn'),
-      householdCode: z
-          .string()
-          .refine((val) => val === '' || (val.length === 5 && /^[a-zA-Z]+$/.test(val)), {
-            message: 'Husholdningskode må være nøyaktig 5 bokstaver (ingen tall)',
-          })
-          .optional(),
+      firstName: z.string({ required_error: 'Firstname is required' }).min(5, 'Firstname must be minimum 5 letter'),
+      lastName: z.string({ required_error: 'Lastname is required' }).min(5, 'Lastname must be minimum 5 letter'),
+      email: z.string({ required_error: 'Email is required' }).email('Invalid email').min(5, 'Email must be minimum 5 letters'),
       password: z
-          .string({ required_error: 'Passord er påkrevd' })
-          .min(8, 'Passord må være minst 8 tegn')
-          .max(50, 'Passord kan være maks 50 tegn')
+          .string({ required_error: 'Password is required' })
+          .min(8, 'Password must be minimum 8 letters')
           .regex(/[A-Z]/, 'Må inneholde minst én stor bokstav')
           .regex(/[a-z]/, 'Må inneholde minst én liten bokstav')
           .regex(/[0-9]/, 'Må inneholde minst ett tall')
@@ -37,7 +33,6 @@ const rawSchema = z
       acceptedPrivacyPolicy: z.literal(true, {
         errorMap: () => ({ message: 'Du må godta personvernerklæringen' }),
       }),
-      //turnstileToken: z.string().min(1, 'Vennligst fullfør CAPTCHA-verifiseringen')
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: 'Passordene stemmer ikke overens',
@@ -52,15 +47,32 @@ const { handleSubmit, meta } = useForm({
 // Get auth store and toast
 const { toast } = useToast()
 
-// Loading state
-const isLoading = ref(false)
+// Use the generated register mutation
+const { mutate: register, isPending: isLoading } = useRegister({
+  mutation: {
+    onSuccess: (response: RegisterResponse) => {
+      toast({
+        title: 'Suksess',
+        description: 'Kontoen din er opprettet. Vennligst logg inn for å fortsette.',
+        variant: 'default',
+      })
+      router.push('/login')
+    },
+    onError: (error: unknown) => {
+      toast({
+        title: 'Registreringsfeil',
+        description: getErrorMessage(error as { response?: { data?: { message?: string }; status?: number } }),
+        variant: 'destructive',
+      })
+    }
+  }
+})
 
 // Function to parse error messages and provide specific user feedback
 const getErrorMessage = (error: { response?: { data?: { message?: string }; status?: number } }) => {
   // Default message
   const message = 'Kunne ikke registrere. Vennligst prøv igjen.';
 
-  // Extract error message from response if available
   const errorMessage = error?.response?.data?.message || '';
 
   if (error?.response?.status === 429) {
@@ -81,28 +93,9 @@ const getErrorMessage = (error: { response?: { data?: { message?: string }; stat
 const onSubmit = handleSubmit(async (values) => {
   if (isLoading.value) return
 
-  isLoading.value = true
-  try {
-    const { confirmPassword, acceptedPrivacyPolicy, ...registrationData } = values
-    toast({
-      title: 'Suksess',
-      description: 'Kontoen din er opprettet og du er nå logget inn',
-      variant: 'default',
-    })
-    await router.push('/dashboard');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    toast({
-      title: 'Registreringsfeil',
-      description: getErrorMessage(error),
-      variant: 'destructive',
-    })
-  } finally {
-    isLoading.value = false
-  }
+  const { confirmPassword, acceptedPrivacyPolicy, ...registrationData } = values
+  register({ data: registrationData })
 })
-
-
 
 </script>
 

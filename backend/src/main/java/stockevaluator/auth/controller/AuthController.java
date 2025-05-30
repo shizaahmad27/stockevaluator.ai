@@ -7,18 +7,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.annotation.*;
 import stockevaluator.auth.dto.*;
 import stockevaluator.auth.service.AuthService;
 import stockevaluator.config.FrontendConfig;
-import stockevaluator.email.service.EmailAdminService;
 import stockevaluator.user.dto.UserResponse;
 
 
@@ -37,7 +34,6 @@ import java.util.Map;
 public class AuthController {
 
   private final AuthService authService;
-  private final EmailAdminService emailAdminService;
   private final FrontendConfig frontendConfig;
 
   /**

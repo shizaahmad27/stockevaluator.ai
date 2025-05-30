@@ -1,18 +1,83 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Mail, AlertCircle } from 'lucide-vue-next'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useLogin } from '@/api/generated/authentication/authentication'
+import type { LoginResponse, LoginRequest } from '@/api/generated/model'
+import { useToast } from '@/components/ui/toast/use-toast'
 
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import PasswordInput from '@/components/auth/PasswordInput.vue'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useLoginForm } from '@/utils/auth/useLoginForm'
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as z from 'zod'
 
 const route = useRoute()
+const router = useRouter()
 const redirectPath = computed(() => (route.query.redirect as string) || '/dashboard')
-const { isLoading, hasAttemptedLogin, formError, meta, onSubmit } = useLoginForm(redirectPath.value)
+const { toast } = useToast()
+
+// Login form schema
+const loginSchema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(1, 'Password is required'),
+})
+
+const { handleSubmit, meta } = useForm({
+  validationSchema: toTypedSchema(loginSchema),
+})
+
+// Use the generated login mutation
+const { mutate: login, isPending: isLoading } = useLogin({
+  mutation: {
+    onSuccess: (response: LoginResponse) => {
+      toast({
+        title: 'Suksess',
+        description: 'Du er nå logget inn',
+        variant: 'default',
+      })
+      router.push('/')
+    },
+    onError: (error: unknown) => {
+      toast({
+        title: 'Innloggingsfeil',
+        description: getErrorMessage(error as { response?: { data?: { message?: string }; status?: number } }),
+        variant: 'destructive',
+      })
+    }
+  }
+})
+
+// Function to parse error messages and provide specific user feedback
+const getErrorMessage = (error: { response?: { data?: { message?: string }; status?: number } }) => {
+  // Default message
+  const message = 'Kunne ikke logge inn. Vennligst prøv igjen.';
+
+  // Extract error message from response if available
+  const errorMessage = error?.response?.data?.message || '';
+
+  if (error?.response?.status === 401) {
+    return 'Feil e-post eller passord. Vennligst prøv igjen.';
+  }
+
+  if (error?.response?.status === 429) {
+    return 'For mange forsøk. Vennligst vent litt før du prøver igjen.';
+  }
+
+  if (error?.response?.status === 500) {
+    return 'Det oppstod en serverfeil. Vennligst prøv igjen senere.';
+  }
+
+  return errorMessage || message;
+}
+
+const onSubmit = handleSubmit(async (values) => {
+  if (isLoading.value) return
+  login({ data: values })
+})
 </script>
 
 <template>
@@ -22,15 +87,9 @@ const { isLoading, hasAttemptedLogin, formError, meta, onSubmit } = useLoginForm
         class="w-full max-w-sm p-8 border border-gray-200 rounded-xl shadow-sm bg-white space-y-5"
     >
       <h1 class="text-3xl font-bold text-center">Innlogging</h1>
-
-      <!-- Form-level error alert -->
-      <Alert v-if="formError" variant="destructive" class="bg-red-50 border-red-300 text-red-700">
-        <AlertCircle class="h-4 w-4" />
-        <AlertDescription class="ml-2">{{ formError }}</AlertDescription>
-      </Alert>
-
+      
       <!-- Email Field -->
-      <FormField v-slot="{ componentField }" name="identifier">
+      <FormField v-slot="{ componentField }" name="email">
         <FormItem>
           <FormLabel class="block text-sm font-medium text-gray-700 mb-1">E-post</FormLabel>
           <FormControl>
@@ -67,7 +126,7 @@ const { isLoading, hasAttemptedLogin, formError, meta, onSubmit } = useLoginForm
       <!-- Submit Button -->
       <Button
           type="submit"
-          :disabled="((!meta.valid || !meta.dirty) && !hasAttemptedLogin) || isLoading"
+          :disabled="!meta.valid || isLoading"
           class="w-full hover:cursor-pointer bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 rounded-md text-sm font-medium"
       >
         <template v-if="isLoading">Logger inn...</template>

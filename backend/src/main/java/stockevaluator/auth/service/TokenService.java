@@ -79,22 +79,22 @@ public class TokenService {
     return generate(userDetails, expirationDate, claims);
   }
 
-  /**
-   * Generates a reset password token for the given email.
-   *
-   * @param email the email to include in the token
-   * @return the generated reset password token
-   */
-  public String generateResetPasswordToken(String email) {
-    Date now = new Date(System.currentTimeMillis());
-    Date expiration = getResetPasswordTokenExpiration();
-    return Jwts.builder()
-        .subject(email)
-        .issuedAt(now)
-        .expiration(expiration)
-        .signWith(secretKey)
-        .compact();
-  }
+//  /**
+//   * Generates a reset password token for the given email.
+//   *
+//   * @param email the email to include in the token
+//   * @return the generated reset password token
+//   */
+//  public String generateResetPasswordToken(String email) {
+//    Date now = new Date(System.currentTimeMillis());
+//    Date expiration = getResetPasswordTokenExpiration();
+//    return Jwts.builder()
+//        .subject(email)
+//        .issuedAt(now)
+//        .expiration(expiration)
+//        .signWith(secretKey)
+//        .compact();
+//  }
 
   /**
    * Generates a JWT token for the given user details and expiration date.
@@ -110,9 +110,13 @@ public class TokenService {
         .map(authority -> authority.getAuthority().replace("ROLE_", "")).collect(
             Collectors.toSet());
 
-    return Jwts.builder().subject(userDetails.getUsername())
-        .issuedAt(new Date(System.currentTimeMillis())).expiration(expirationDate)
-        .claim("roles", roles).claims(additionalClaims).signWith(secretKey)
+    return Jwts.builder()
+        .setSubject(userDetails.getUsername())
+        .setIssuedAt(new Date(System.currentTimeMillis()))
+        .setExpiration(expirationDate)
+        .claim("roles", roles)
+        .addClaims(additionalClaims)
+        .signWith(secretKey)
         .compact();
   }
 
@@ -204,9 +208,8 @@ public class TokenService {
 
   private Claims getAllClaims(String token) {
     return Jwts.parser()
-        .verifyWith(secretKey)
-        .build()
-        .parseSignedClaims(token)
-        .getPayload();
+        .setSigningKey(secretKey)
+        .parseClaimsJws(token)
+        .getBody();
   }
 }
