@@ -1,19 +1,25 @@
-name: stockevaluator
+name: stockevaluator-ai
 services:
-- name: frontend
+- name: backend
   github:
     branch: main
     deploy_on_push: true
-    repo: shizaahmad27/stockevaluator
-  build_command: cd frontend && npm install && npm run build
-  run_command: cd frontend && npm run preview
-  http_port: 4173
+    repo: shizaahmad27/stockevaluator.ai
+  build_command: ./mvnw clean package -DskipTests
+  run_command: java -jar target/stock-evaluator-backend-0.0.1-SNAPSHOT.jar
+  http_port: 8080
   instance_count: 1
   instance_size_slug: basic-xxs
   envs:
-  - key: NODE_ENV
-    value: production
-  - key: VITE_API_URL
-    value: ${API_URL}
+  - key: SPRING_PROFILES_ACTIVE
+    value: prod
+  - key: SERVER_PORT
+    value: "8080"
+  - key: SPRING_DATASOURCE_URL
+    value: ${db.DATABASE_URL}
+  - key: SPRING_DATASOURCE_USERNAME
+    value: ${db.DATABASE_USERNAME}
+  - key: SPRING_DATASOURCE_PASSWORD
+    value: ${db.DATABASE_PASSWORD}
   routes:
   - path: / 

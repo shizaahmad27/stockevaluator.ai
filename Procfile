@@ -1,0 +1,1 @@
+web: java -jar target/stock-evaluator-backend-0.0.1-SNAPSHOT.jar 
