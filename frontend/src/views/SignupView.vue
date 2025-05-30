@@ -25,17 +25,17 @@ const rawSchema = z
       password: z
           .string({ required_error: 'Password is required' })
           .min(8, 'Password must be minimum 8 letters')
-          .regex(/[A-Z]/, 'Må inneholde minst én stor bokstav')
-          .regex(/[a-z]/, 'Må inneholde minst én liten bokstav')
-          .regex(/[0-9]/, 'Må inneholde minst ett tall')
-          .regex(/[^A-Za-z0-9]/, 'Må inneholde minst ett spesialtegn'),
-      confirmPassword: z.string({ required_error: 'Bekreft passord er påkrevd' }),
+          .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
+          .regex(/[a-z]/, 'Must contain at least one lowercase letter')
+          .regex(/[0-9]/, 'Must contain at least one number')
+          .regex(/[^A-Za-z0-9]/, 'Must contain at least one special character'),
+      confirmPassword: z.string({ required_error: 'Confirm password is required' }),
       acceptedPrivacyPolicy: z.literal(true, {
-        errorMap: () => ({ message: 'Du må godta personvernerklæringen' }),
+        errorMap: () => ({ message: 'You must accept the privacy policy' }),
       }),
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: 'Passordene stemmer ikke overens',
+      message: 'Passwords do not match',
       path: ['confirmPassword'],
     })
 
@@ -52,15 +52,15 @@ const { mutate: register, isPending: isLoading } = useRegister({
   mutation: {
     onSuccess: (response: RegisterResponse) => {
       toast({
-        title: 'Suksess',
-        description: 'Kontoen din er opprettet. Vennligst logg inn for å fortsette.',
+        title: 'Success',
+        description: 'Your account has been created. Please log in to continue.',
         variant: 'default',
       })
       router.push('/login')
     },
     onError: (error: unknown) => {
       toast({
-        title: 'Registreringsfeil',
+        title: 'Registration Error',
         description: getErrorMessage(error as { response?: { data?: { message?: string }; status?: number } }),
         variant: 'destructive',
       })
@@ -71,20 +71,20 @@ const { mutate: register, isPending: isLoading } = useRegister({
 // Function to parse error messages and provide specific user feedback
 const getErrorMessage = (error: { response?: { data?: { message?: string }; status?: number } }) => {
   // Default message
-  const message = 'Kunne ikke registrere. Vennligst prøv igjen.';
+  const message = 'Could not register. Please try again.';
 
   const errorMessage = error?.response?.data?.message || '';
 
   if (error?.response?.status === 429) {
-    return 'For mange forsøk. Vennligst vent litt før du prøver igjen.';
+    return 'Too many attempts. Please wait a while before trying again.';
   }
 
   if (error?.response?.status === 409) {
-    return 'E-postadressen er allerede registrert. Vennligst bruk en annen e-post eller prøv å logge inn.';
+    return 'Email address is already registered. Please use a different email or try logging in.';
   }
 
   if (error?.response?.status === 500) {
-    return 'Det oppstod en serverfeil. Vennligst prøv igjen senere.';
+    return 'A server error occurred. Please try again later.';
   }
 
   return errorMessage || message;
@@ -105,12 +105,12 @@ const onSubmit = handleSubmit(async (values) => {
         @submit="onSubmit"
         class="w-full max-w-sm p-8 border border-gray-200 rounded-xl shadow-sm bg-white space-y-5"
     >
-      <h1 class="text-3xl font-bold text-center">Registrer deg</h1>
+      <h1 class="text-3xl font-bold text-center">Sign Up</h1>
 
       <!-- First Name -->
       <FormField v-slot="{ componentField }" name="firstName">
         <FormItem>
-          <FormLabel class="block text-sm font-medium text-gray-700 mb-1">Fornavn</FormLabel>
+          <FormLabel class="block text-sm font-medium text-gray-700 mb-1">First Name</FormLabel>
           <FormControl>
             <div class="relative">
               <User
@@ -118,7 +118,7 @@ const onSubmit = handleSubmit(async (values) => {
               />
               <Input
                   type="text"
-                  placeholder="Ola"
+                  placeholder="John"
                   class="w-full px-3 py-2 pl-8 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-bind="componentField"
               />
@@ -131,7 +131,7 @@ const onSubmit = handleSubmit(async (values) => {
       <!-- Last Name -->
       <FormField v-slot="{ componentField }" name="lastName">
         <FormItem>
-          <FormLabel class="block text-sm font-medium text-gray-700 mb-1">Etternavn</FormLabel>
+          <FormLabel class="block text-sm font-medium text-gray-700 mb-1">Last Name</FormLabel>
           <FormControl>
             <div class="relative">
               <User
@@ -139,7 +139,7 @@ const onSubmit = handleSubmit(async (values) => {
               />
               <Input
                   type="text"
-                  placeholder="Nordmann"
+                  placeholder="Doe"
                   class="w-full px-3 py-2 pl-8 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-bind="componentField"
               />
@@ -152,7 +152,7 @@ const onSubmit = handleSubmit(async (values) => {
       <!-- Email -->
       <FormField v-slot="{ componentField }" name="email">
         <FormItem>
-          <FormLabel class="block text-sm font-medium text-gray-700 mb-1">E-post</FormLabel>
+          <FormLabel class="block text-sm font-medium text-gray-700 mb-1">Email</FormLabel>
           <FormControl>
             <div class="relative">
               <Mail
@@ -160,7 +160,7 @@ const onSubmit = handleSubmit(async (values) => {
               />
               <Input
                   type="email"
-                  placeholder="navn@eksempel.no"
+                  placeholder="name@example.com"
                   class="w-full px-3 py-2 pl-8 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-bind="componentField"
               />
@@ -174,7 +174,7 @@ const onSubmit = handleSubmit(async (values) => {
       <FormField v-slot="{ componentField }" name="password">
         <PasswordInput
             name="password"
-            label="Passord"
+            label="Password"
             placeholder="********"
             :componentField="componentField"
             :showToggle="true"
@@ -186,7 +186,7 @@ const onSubmit = handleSubmit(async (values) => {
       <FormField v-slot="{ componentField }" name="confirmPassword">
         <PasswordInput
             name="confirmPassword"
-            label="Bekreft passord"
+            label="Confirm Password"
             placeholder="********"
             :componentField="componentField"
             :showToggle="true"
@@ -209,18 +209,18 @@ const onSubmit = handleSubmit(async (values) => {
                   tabindex="0"
                   role="checkbox"
                   :aria-checked="value"
-                  aria-label="Godta personvernerklæringen"
+                  aria-label="Accept privacy policy"
               />
             </FormControl>
             <label for="acceptedPrivacyPolicy" class="text-sm text-gray-700 cursor-pointer select-none">
-              Jeg godtar
+              I accept the
               <router-link
-                  to="/personvern"
+                  to="/privacy"
                   class="text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-sm px-1"
                   tabindex="0"
-                  aria-label="Åpne personvernerklæringen"
+                  aria-label="Open privacy policy"
               >
-                personvernerklæringen
+                privacy policy
               </router-link>
             </label>
           </div>
@@ -234,15 +234,15 @@ const onSubmit = handleSubmit(async (values) => {
           :disabled="!meta.valid || isLoading"
           class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 rounded-md text-sm font-medium"
       >
-        <template v-if="isLoading">Oppretter konto...</template>
-        <template v-else>Registrer deg</template>
+        <template v-if="isLoading">Creating account...</template>
+        <template v-else>Sign Up</template>
       </Button>
 
       <!-- Conditional CTAs below -->
       <div class="text-sm text-center space-y-2">
         <div>
-          <span class="text-gray-600">Har du allerede en konto?</span>
-          <a href="/logg-inn" class="ml-1 text-blue-600 hover:underline">Logg inn</a>
+          <span class="text-gray-600">Already have an account?</span>
+          <a href="/login" class="ml-1 text-blue-600 hover:underline">Log in</a>
         </div>
       </div>
     </form>

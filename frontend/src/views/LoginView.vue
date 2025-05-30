@@ -35,15 +35,15 @@ const { mutate: login, isPending: isLoading } = useLogin({
   mutation: {
     onSuccess: (response: LoginResponse) => {
       toast({
-        title: 'Suksess',
-        description: 'Du er nå logget inn',
+        title: 'Success',
+        description: 'You are now logged in',
         variant: 'default',
       })
       router.push('/')
     },
     onError: (error: unknown) => {
       toast({
-        title: 'Innloggingsfeil',
+        title: 'Login Error',
         description: getErrorMessage(error as { response?: { data?: { message?: string }; status?: number } }),
         variant: 'destructive',
       })
@@ -54,21 +54,21 @@ const { mutate: login, isPending: isLoading } = useLogin({
 // Function to parse error messages and provide specific user feedback
 const getErrorMessage = (error: { response?: { data?: { message?: string }; status?: number } }) => {
   // Default message
-  const message = 'Kunne ikke logge inn. Vennligst prøv igjen.';
+  const message = 'Could not log in. Please try again.';
 
   // Extract error message from response if available
   const errorMessage = error?.response?.data?.message || '';
 
   if (error?.response?.status === 401) {
-    return 'Feil e-post eller passord. Vennligst prøv igjen.';
+    return 'Incorrect email or password. Please try again.';
   }
 
   if (error?.response?.status === 429) {
-    return 'For mange forsøk. Vennligst vent litt før du prøver igjen.';
+    return 'Too many attempts. Please wait a while before trying again.';
   }
 
   if (error?.response?.status === 500) {
-    return 'Det oppstod en serverfeil. Vennligst prøv igjen senere.';
+    return 'A server error occurred. Please try again later.';
   }
 
   return errorMessage || message;
@@ -86,12 +86,12 @@ const onSubmit = handleSubmit(async (values) => {
         @submit="onSubmit"
         class="w-full max-w-sm p-8 border border-gray-200 rounded-xl shadow-sm bg-white space-y-5"
     >
-      <h1 class="text-3xl font-bold text-center">Innlogging</h1>
+      <h1 class="text-3xl font-bold text-center">Login</h1>
       
       <!-- Email Field -->
       <FormField v-slot="{ componentField }" name="email">
         <FormItem>
-          <FormLabel class="block text-sm font-medium text-gray-700 mb-1">E-post</FormLabel>
+          <FormLabel class="block text-sm font-medium text-gray-700 mb-1">Email</FormLabel>
           <FormControl>
             <div class="relative">
               <Mail
@@ -99,7 +99,7 @@ const onSubmit = handleSubmit(async (values) => {
               />
               <Input
                   type="email"
-                  placeholder="navn@eksempel.no"
+                  placeholder="name@example.com"
                   class="w-full px-3 py-2 pl-8 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-bind="componentField"
                   autocomplete="username"
@@ -114,7 +114,7 @@ const onSubmit = handleSubmit(async (values) => {
       <FormField v-slot="{ componentField }" name="password">
         <PasswordInput
             name="password"
-            label="Passord"
+            label="Password"
             placeholder="********"
             :componentField="componentField"
             :showToggle="true"
@@ -129,19 +129,19 @@ const onSubmit = handleSubmit(async (values) => {
           :disabled="!meta.valid || isLoading"
           class="w-full hover:cursor-pointer bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 rounded-md text-sm font-medium"
       >
-        <template v-if="isLoading">Logger inn...</template>
-        <template v-else>Logg inn</template>
+        <template v-if="isLoading">Logging in...</template>
+        <template v-else>Log in</template>
       </Button>
 
       <!-- Bottom links -->
       <div class="text-sm text-center space-y-2">
         <div>
-          <span class="text-gray-600">Har du ikke en konto?</span>
-          <a href="/registrer" class="ml-1 text-blue-600 hover:underline">Registrer deg</a>
+          <span class="text-gray-600">Don't have an account?</span>
+          <a href="/signup" class="ml-1 text-blue-600 hover:underline">Sign up</a>
         </div>
 
-        <a href="/glemt-passord" class="block text-blue-500 hover:underline">
-          Glemt passordet ditt?
+        <a href="/forgot-password" class="block text-blue-500 hover:underline">
+          Forgot your password?
         </a>
       </div>
     </form>
