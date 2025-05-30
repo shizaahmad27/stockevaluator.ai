@@ -1,0 +1,19 @@
+name: stockevaluator
+services:
+- name: frontend
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: shizaahmad27/stockevaluator
+  build_command: cd frontend && npm install && npm run build
+  run_command: cd frontend && npm run preview
+  http_port: 4173
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  envs:
+  - key: NODE_ENV
+    value: production
+  - key: VITE_API_URL
+    value: ${API_URL}
+  routes:
+  - path: / 
