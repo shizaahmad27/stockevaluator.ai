@@ -5,7 +5,6 @@ import {
     useLogin,
     useMe,
     useRegister,
-    useRegisterAdmin,
 } from '@/api/generated/authentication/authentication'
 import type { LoginRequest, RegisterRequest } from '@/api/generated/model'
 import axios from 'axios'
@@ -27,8 +26,7 @@ export const useAuthStore = defineStore('auth', () => {
     // Get the register mutation
     const { mutateAsync: registerMutation } = useRegister()
 
-    // Get the register admin mutation
-    const { mutateAsync: registerAdminMutation } = useRegisterAdmin()
+
 
     // Get current user query - only enabled when we have a token
     const { data: currentUser, refetch: refetchUser } = useMe({
@@ -39,18 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
         },
     })
 
-    // Role-based authorization
-    const isAdmin = computed(() => {
-        return (
-            currentUser.value?.roles?.includes('ADMIN') ||
-            currentUser.value?.roles?.includes('SUPER_ADMIN') ||
-            false
-        )
-    })
 
-    const isSuperAdmin = computed(() => {
-        return currentUser.value?.roles?.includes('SUPER_ADMIN') || false
-    })
 
     // Function to update tokens in both store and localStorage
     function updateTokens(newAccessToken: string, newRefreshToken: string) {
@@ -94,14 +81,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    async function registerAdmin(data: RegisterRequest) {
-        try {
-            await registerAdminMutation({ data })
-        } catch (error) {
-            console.error('Admin registration failed:', error)
-            throw error
-        }
-    }
+
 
     async function refreshTokens() {
         if (!refreshToken.value) {
@@ -151,16 +131,11 @@ export const useAuthStore = defineStore('auth', () => {
 
         // Computed
         isAuthenticated,
-        isAdmin,
-        isSuperAdmin,
+
 
         // Actions
         login,
-        register,
-        registerAdmin,
-        logout,
-        refreshTokens,
-        updateTokens,
+
 
         // Expose for debugging
         refetchUser,

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useAuthStore } from '@/stores/useAuthStore';
+import { useAuthStore } from '@/stores/auth/useAuthStore';
 
 export default defineComponent({
   name: 'CTASection',
