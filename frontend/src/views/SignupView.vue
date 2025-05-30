@@ -39,7 +39,6 @@ const rawSchema = z
       path: ['confirmPassword'],
     })
 
-// Set up consts for submit button deactivation
 const { handleSubmit, meta } = useForm({
   validationSchema: toTypedSchema(rawSchema),
 })
