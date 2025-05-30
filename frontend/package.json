@@ -11,13 +11,17 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@vee-validate/zod": "^4.15.0",
     "axios": "^1.9.0",
     "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.511.0",
     "pinia": "^3.0.1",
     "reka-ui": "^2.2.1",
     "tailwind-merge": "^3.3.0",
+    "vee-validate": "^4.15.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "zod": "^3.25.42"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
