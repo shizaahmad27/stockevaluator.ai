@@ -36,7 +36,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         "Unauthorized"
     );
     problemDetail.setType(
-        URI.create("https://krisefikser.ntnu.stud/errors/" + HttpStatus.UNAUTHORIZED.value()));
+            URI.create("https://stockevaluator.ai/errors/401" + HttpStatus.UNAUTHORIZED.value()));
     problemDetail.setTitle(HttpStatus.UNAUTHORIZED.getReasonPhrase());
     response.setContentType("application/problem+json");
     response.setStatus(HttpStatus.UNAUTHORIZED.value());
