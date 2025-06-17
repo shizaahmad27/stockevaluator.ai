@@ -4,7 +4,7 @@ import { Toast } from './components/ui/toast'
 </script>
 
 <template>
-  <Navbar />
+
   <router-view />
   <Toast />
 </template>

@@ -19,11 +19,13 @@
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/service/AuthService.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/dto/UpdatePasswordResponse.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/controller/AuthController.java
+/Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/scraper/service/RedditService.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/exception/InvalidTokenException.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/entity/PasswordResetToken.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/email/repository/VerificationTokenRepository.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/email/config/MailProperties.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/email/exception/EmailTemplateException.java
+/Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/config/RedditConfig.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/user/dto/UserLocationRequest.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/decorators/ValidEmail.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/dto/CompletePasswordResetRequest.java
@@ -51,8 +53,10 @@
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/email/exception/EmailSendingException.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/user/exception/EmailAlreadyExistsException.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/config/SecurityConfiguration.java
+/Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/config/JwtAuthenticationEntryPoint.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/user/dto/UserResponse.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/exception/TwoFactorAuthRequiredException.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/dto/RegisterRequest.java
+/Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/scraper/controller/RedditController.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/user/repository/UserRepository.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/config/FrontendConfig.java

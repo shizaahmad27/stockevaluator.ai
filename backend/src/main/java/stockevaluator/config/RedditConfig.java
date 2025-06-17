@@ -36,7 +36,11 @@ public class RedditConfig {
 
     @PostConstruct
     public void init() {
-        refreshAccessToken(); // Get token immediately on startup
+        try {
+            refreshAccessToken();
+        } catch (Exception e) {
+            System.err.println("Warning: Could not get Reddit access token on startup: " + e.getMessage());
+        }
     }
 
     public String getAccessToken() {
@@ -46,7 +50,7 @@ public class RedditConfig {
         return accessToken;
     }
 
-    @Scheduled(fixedRate = 3600000) // Refresh token every hour
+    @Scheduled(fixedRate = 3600000)
     public void refreshAccessToken() {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPost request = new HttpPost("https://www.reddit.com/api/v1/access_token");
@@ -54,16 +58,32 @@ public class RedditConfig {
             String credentials = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
             request.setHeader("Authorization", "Basic " + credentials);
             request.setHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.setHeader("User-Agent", "StockEvaluator/1.0.0");
 
             StringEntity entity = new StringEntity("grant_type=password&username=" + username + "&password=" + password);
             request.setEntity(entity);
 
             accessToken = client.execute(request, response -> {
                 String json = EntityUtils.toString(response.getEntity());
+                System.out.println("Reddit API Response: " + json);
                 JsonNode root = objectMapper.readTree(json);
-                return root.get("access_token").asText();
+
+                if (root.has("error")) {
+                    throw new RuntimeException("Reddit API Error: " + root.get("error").asText() +
+                            " - " + root.path("error_description").asText());
+                }
+
+                JsonNode accessTokenNode = root.get("access_token");
+                if (accessTokenNode == null) {
+                    throw new RuntimeException("No access_token in response: " + json);
+                }
+
+                return accessTokenNode.asText();
             });
+
+            System.out.println("Successfully obtained Reddit access token");
         } catch (Exception e) {
+            System.err.println("Failed to refresh Reddit access token: " + e.getMessage());
             throw new RuntimeException("Error refreshing Reddit access token", e);
         }
     }
