@@ -6,9 +6,10 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+import stockevaluator.config.RedditConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -20,17 +21,15 @@ public class RedditService {
 
     private static final String WSB_SUBREDDIT = "wallstreetbets";
     private static final Pattern TICKER_PATTERN = Pattern.compile("\\$([A-Z]{1,5})");
-    private static final String REDDIT_API_BASE = "https://oauth.reddit.com"; //https://www.reddit.com er det ikke egentlig den ? #TODO check
+    private static final String REDDIT_API_BASE = "https://oauth.reddit.com";
 
-    @Value("${reddit.access.token}")
-    private String accessToken;
-
+    private final RedditConfig redditConfig;
     private final ObjectMapper objectMapper;
 
     public List<JsonNode> getHotPosts() {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet request = new HttpGet(REDDIT_API_BASE + "/r/" + WSB_SUBREDDIT + "/hot");
-            request.setHeader("Authorization", "Bearer " + accessToken);
+            request.setHeader("Authorization", "Bearer " + redditConfig.getAccessToken());
             request.setHeader("User-Agent", "StockEvaluator/1.0.0");
 
             return client.execute(request, response -> {
@@ -58,8 +57,9 @@ public class RedditService {
 
     public List<JsonNode> searchPostsByTicker(String ticker) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpGet request = new HttpGet(REDDIT_API_BASE + "/r/" + WSB_SUBREDDIT + "/search?q=$" + ticker + "&sort=relevance");
-            request.setHeader("Authorization", "Bearer " + accessToken);
+            // Fixed: Added restrict_sr=true to search only in wallstreetbets
+            HttpGet request = new HttpGet(REDDIT_API_BASE + "/r/" + WSB_SUBREDDIT + "/search?q=$" + ticker + "&sort=relevance&restrict_sr=true");
+            request.setHeader("Authorization", "Bearer " + redditConfig.getAccessToken());
             request.setHeader("User-Agent", "StockEvaluator/1.0.0");
 
             return client.execute(request, response -> {

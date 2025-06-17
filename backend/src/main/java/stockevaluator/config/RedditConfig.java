@@ -7,14 +7,16 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
+import jakarta.annotation.PostConstruct; // Updated import for Spring Boot 3
 
 import java.util.Base64;
 
 @Configuration
+@EnableScheduling
 public class RedditConfig {
 
     @Value("${reddit.client.id}")
@@ -32,9 +34,15 @@ public class RedditConfig {
     private String accessToken;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Bean
-    public String redditAccessToken() {
-        refreshAccessToken();
+    @PostConstruct
+    public void init() {
+        refreshAccessToken(); // Get token immediately on startup
+    }
+
+    public String getAccessToken() {
+        if (accessToken == null) {
+            refreshAccessToken(); // Fallback if somehow null
+        }
         return accessToken;
     }
 
