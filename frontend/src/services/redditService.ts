@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { useGetTrendingTickers, useGetAllPosts, useGetPostsByTicker, useGetCommentsByPostId } from '@/generated/api/reddit-controller';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
@@ -30,6 +30,24 @@ export interface Ticker {
     sentimentScore: number;
     trendingScore: number;
 }
+
+export const useRedditService = () => {
+    const { data: trendingTickers, isLoading: isLoadingTickers } = useGetTrendingTickers();
+    const { data: allPosts, isLoading: isLoadingPosts } = useGetAllPosts();
+    const { data: postsByTicker, isLoading: isLoadingPostsByTicker } = useGetPostsByTicker();
+    const { data: commentsByPost, isLoading: isLoadingComments } = useGetCommentsByPostId();
+
+    return {
+        trendingTickers,
+        allPosts,
+        postsByTicker,
+        commentsByPost,
+        isLoadingTickers,
+        isLoadingPosts,
+        isLoadingPostsByTicker,
+        isLoadingComments
+    };
+};
 
 export const redditService = {
     async getAllPosts(): Promise<RedditPost[]> {

@@ -7,14 +7,14 @@
       </div>
       <div class="flex gap-4">
         <button
-            class="px-6 py-2 rounded-lg font-medium transition-all duration-300 border border-blue-500/50 text-blue-400 hover:bg-blue-500/20 hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/25"
-            @click="navigateTo('/login')"
+          class="px-6 py-2 rounded-lg font-medium transition-all duration-300 border border-blue-500/50 text-blue-400 hover:bg-blue-500/20 hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/25"
+          @click="navigateTo('/login')"
         >
           Login
         </button>
         <button
-            class="px-6 py-2 rounded-lg font-medium transition-all duration-300 bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 hover:shadow-lg hover:shadow-purple-500/25 transform hover:scale-105"
-            @click="navigateTo('/signup')"
+          class="px-6 py-2 rounded-lg font-medium transition-all duration-300 bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 hover:shadow-lg hover:shadow-purple-500/25 transform hover:scale-105"
+          @click="navigateTo('/signup')"
         >
           Sign Up
         </button>
@@ -35,31 +35,52 @@
         <div class="relative max-w-2xl mx-auto mb-8">
           <div class="relative">
             <input
-                v-model="searchQuery"
-                type="text"
-                placeholder="Search for stocks (e.g., AAPL, TSLA, GME)..."
-                class="w-full px-6 py-4 pl-12 text-lg bg-gray-800/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 backdrop-blur-sm transition-all duration-300"
-                @keyup.enter="searchStock"
+              v-model="searchQuery"
+              type="text"
+              placeholder="Search for stocks (e.g., AAPL, TSLA, GME)..."
+              class="w-full px-6 py-4 pl-12 text-lg bg-gray-800/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 backdrop-blur-sm transition-all duration-300"
+              :class="{ 'border-red-500/50': searchError }"
+              @keyup.enter="searchStock"
+              @input="clearError"
+              :disabled="searchLoading"
             />
             <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </div>
           <button
-              @click="searchStock"
-              class="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-medium"
+            @click="searchStock"
+            :disabled="searchLoading || !searchQuery.trim()"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Search
+            <span v-if="searchLoading" class="flex items-center gap-2">
+              <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Searching...
+            </span>
+            <span v-else>Search</span>
           </button>
+          
+          <!-- Error Message -->
+          <div v-if="searchError" class="absolute top-full left-0 right-0 mt-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg backdrop-blur-sm">
+            <div class="flex items-center gap-2 text-red-400 text-sm">
+              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              {{ searchError }}
+            </div>
+          </div>
         </div>
 
         <!-- Quick Actions -->
         <div class="flex flex-wrap gap-3 justify-center">
           <button
-              v-for="ticker in popularTickers"
-              :key="ticker"
-              @click="quickSearch(ticker)"
-              class="px-4 py-2 bg-gray-800/60 border border-gray-600/30 rounded-lg hover:bg-gray-700/60 hover:border-gray-500 transition-all duration-300 text-sm font-medium"
+            v-for="ticker in popularTickers"
+            :key="ticker"
+            @click="quickSearch(ticker)"
+            class="px-4 py-2 bg-gray-800/60 border border-gray-600/30 rounded-lg hover:bg-gray-700/60 hover:border-gray-500 transition-all duration-300 text-sm font-medium"
           >
             {{ ticker }}
           </button>
@@ -70,43 +91,12 @@
     <!-- Main Content Grid -->
     <section class="px-8 py-12">
       <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-        <!-- Reddit Trends Card -->
-        <div class="bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:bg-gray-800/60 transition-all duration-300">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
-              </svg>
-            </div>
-            <h2 class="text-2xl font-bold">Reddit Sentiment</h2>
-            <span class="ml-auto text-sm text-gray-400">r/wallstreetbets</span>
-          </div>
-
-          <div class="space-y-4">
-            <div v-for="trend in redditTrends" :key="trend.ticker" class="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg">
-              <div class="flex items-center gap-3">
-                <span class="font-bold text-lg">{{ trend.ticker }}</span>
-                <span class="text-gray-300">{{ trend.mentions }} mentions</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span :class="trend.sentiment > 0 ? 'text-green-400' : 'text-red-400'" class="font-medium">
-                  {{ trend.sentiment > 0 ? '+' : '' }}{{ trend.sentiment }}%
-                </span>
-                <svg v-if="trend.sentiment > 0" class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 14l9-9 3 3L9 18l-4.5-4.5z"></path>
-                </svg>
-                <svg v-else class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <button class="w-full mt-6 py-3 bg-orange-500/20 border border-orange-500/30 text-orange-400 rounded-lg hover:bg-orange-500/30 transition-all duration-300 font-medium">
-            View Full Analysis
-          </button>
-        </div>
+        
+        <!-- Reddit Sentiment Component -->
+        <RedditSentiment 
+          @ticker-click="handleTickerClick"
+          @view-full-analysis="handleViewFullAnalysis"
+        />
 
         <!-- Market Overview Card -->
         <div class="bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:bg-gray-800/60 transition-all duration-300">
@@ -196,6 +186,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import RedditSentiment from '@/components/reddit/RedditSentiment.vue'
+import { useTickerSearch } from '@/composables/useTickerSearch'
 
 // Remove any default margins/padding on body and html
 onMounted(() => {
@@ -207,17 +199,14 @@ onMounted(() => {
 
 const router = useRouter()
 
+// Use the ticker search composable
+const { searchLoading, searchError, searchTicker, navigateToTicker, clearError } = useTickerSearch()
+
+// Search functionality
 const searchQuery = ref('')
 const popularTickers = ['AAPL', 'TSLA', 'GME', 'AMC', 'NVDA', 'MSFT']
 
-const redditTrends = ref([
-  { ticker: 'GME', mentions: 847, sentiment: 15.2 },
-  { ticker: 'TSLA', mentions: 623, sentiment: -3.8 },
-  { ticker: 'AAPL', mentions: 456, sentiment: 8.7 },
-  { ticker: 'AMC', mentions: 321, sentiment: 22.1 },
-  { ticker: 'NVDA', mentions: 289, sentiment: 12.5 }
-])
-
+// Market overview data (placeholder - you can connect to real financial API later)
 const topStocks = ref([
   { ticker: 'AAPL', name: 'Apple Inc.', price: '182.52', change: 2.1 },
   { ticker: 'MSFT', name: 'Microsoft Corp.', price: '378.85', change: 1.5 },
@@ -225,20 +214,30 @@ const topStocks = ref([
   { ticker: 'AMZN', name: 'Amazon.com Inc.', price: '153.40', change: 0.9 }
 ])
 
+// Navigation
 const navigateTo = (path: string) => {
   router.push(path)
 }
 
-const searchStock = () => {
+// Search functionality using the composable
+const searchStock = async () => {
   if (searchQuery.value.trim()) {
-    // Navigate to search results or trigger search
-    console.log('Searching for:', searchQuery.value)
-    // router.push(`/search?q=${searchQuery.value}`)
+    clearError() // Clear any previous errors
+    await searchTicker(searchQuery.value)
   }
 }
 
 const quickSearch = (ticker: string) => {
   searchQuery.value = ticker
   searchStock()
+}
+
+// Event handlers for Reddit sentiment component
+const handleTickerClick = (ticker: string) => {
+  navigateToTicker(ticker)
+}
+
+const handleViewFullAnalysis = () => {
+  router.push('/reddit-analysis')
 }
 </script>

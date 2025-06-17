@@ -34,7 +34,6 @@
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/decorators/ValidEmail.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/dto/CompletePasswordResetRequest.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/email/entity/VerificationToken.java
-/Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/controller/RedditDataController.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/exception/InvalidCredentialsException.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/email/service/MockEmailService.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/repository/RefreshTokenRepository.java
