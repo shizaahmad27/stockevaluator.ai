@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useGetTrendingTickers } from '@/api/generated/reddit-controller/reddit-controller'
+import { getTicker } from '@/api/generated/reddit-controller/reddit-controller'
 
 export function useTickerSearch() {
   const router = useRouter()
@@ -16,24 +16,23 @@ export function useTickerSearch() {
     try {
       searchLoading.value = true
       searchError.value = null
-      
+
       const ticker = tickerSymbol.toUpperCase().trim()
-      
+
       // Try to get ticker data from our Reddit API
       const data = await getTicker(ticker)
-      
+
       if (data && data.symbol) {
         // Ticker found, navigate to ticker page
         await router.push(`/ticker/${ticker}`)
         return true
       } else {
-        // Ticker not found in our Reddit data
         searchError.value = `No Reddit data found for ${ticker}`
         return false
       }
     } catch (error: any) {
       console.error('Search error:', error)
-      
+
       if (error.response?.status === 404) {
         searchError.value = `Ticker ${tickerSymbol.toUpperCase()} not found in Reddit data`
       } else if (error.response?.status >= 500) {
