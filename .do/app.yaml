@@ -1,25 +1,51 @@
-name: stockevaluator-ai
+name: stockevaluator
 services:
-- name: backend
-  github:
-    branch: main
-    deploy_on_push: true
-    repo: shizaahmad27/stockevaluator.ai
-  build_command: ./mvnw clean package -DskipTests
-  run_command: java -jar target/stock-evaluator-backend-0.0.1-SNAPSHOT.jar
-  http_port: 8080
-  instance_count: 1
-  instance_size_slug: basic-xxs
-  envs:
-  - key: SPRING_PROFILES_ACTIVE
-    value: prod
-  - key: SERVER_PORT
-    value: "8080"
-  - key: SPRING_DATASOURCE_URL
-    value: ${db.DATABASE_URL}
-  - key: SPRING_DATASOURCE_USERNAME
-    value: ${db.DATABASE_USERNAME}
-  - key: SPRING_DATASOURCE_PASSWORD
-    value: ${db.DATABASE_PASSWORD}
-  routes:
-  - path: / 
+  - name: api
+    source_dir: /backend
+    github:
+      repo: shizahmad27/stockevaluator
+      branch: main
+    build_command: mvn clean package -DskipTests
+    run_command: java -jar target/stock-evaluator-backend-0.0.1-SNAPSHOT.jar
+    environment_slug: java-maven
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-1gb
+    http_port: 8080
+    envs:
+      # Database Configuration - Replace with your actual values
+      - key: SPRING_DATASOURCE_URL
+        value: "jdbc:mysql://stockevaluator-db-do-user-22561612-0.f.db.ondigitalocean.com:25060/defaultdb?createDatabaseIfNotExist=true&useSSL=true&requireSSL=true&verifyServerCertificate=false"
+      - key: SPRING_DATASOURCE_USERNAME
+        value: "doadmin"
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: "AVNS_qyC-7Q699Kv2hvL9Rnl"
+      - key: SPRING_PROFILES_ACTIVE
+        value: "prod"
+
+      # JWT Configuration
+      - key: JWT_SECRET
+        value: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
+
+      # Frontend Configuration
+      - key: FRONTEND_URL
+        value: "https://your-frontend-url.com"
+
+      # Reddit API Configuration
+      - key: REDDIT_CLIENT_ID
+        value: "A8sDx0NfCHSXiINBkYoOdQ"
+      - key: REDDIT_CLIENT_SECRET
+        value: "JMjWiCVjqs_U8qS9VTie7CJsPtDnVQ"
+      - key: REDDIT_USERNAME
+        value: "BigCucumber2565"
+      - key: REDDIT_PASSWORD
+        value: "Shiza2004!"
+
+# Optional: Add a static site for frontend if you have one
+# static_sites:
+# - name: frontend
+#   source_dir: /frontend
+#   github:
+#     repo: your-username/your-repo-name
+#     branch: main
+#   build_command: npm run build
+#   output_dir: /dist
