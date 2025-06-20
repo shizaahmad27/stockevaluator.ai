@@ -1,0 +1,23 @@
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Build artifacts
+target/
+backend/target/
+frontend/dist/
+frontend/node_modules/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+
+# Documentation
+README.md 
