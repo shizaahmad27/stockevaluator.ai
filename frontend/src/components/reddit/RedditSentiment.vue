@@ -28,7 +28,7 @@
           </div>
           <p class="text-gray-400 text-sm">Unable to load Reddit trends</p>
           <button
-              @click="refetch"
+              @click="() => refetch()"
               class="mt-2 text-orange-400 hover:text-orange-300 text-sm underline"
           >
             Try again
@@ -48,8 +48,12 @@
 
         <!-- Success State - Display Trending Tickers -->
         <div v-else>
-          <div v-for="ticker in displayTickers" :key="ticker.symbol" class="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg hover:bg-gray-700/50 transition-all duration-200 cursor-pointer" @click="$emit('tickerClick', ticker.symbol)">
-            <div class="flex items-center gap-3">
+        <div
+            v-for="ticker in displayTickers"
+            :key="ticker.symbol"
+            class="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg hover:bg-gray-700/50 transition-all duration-200 cursor-pointer"
+            @click="$emit('tickerClick', ticker.symbol ?? '')"
+          >            <div class="flex items-center gap-3">
               <span class="font-bold text-lg">{{ ticker.symbol }}</span>
               <span class="text-gray-300">{{ ticker.mentionCount || 0 }} mentions</span>
             </div>

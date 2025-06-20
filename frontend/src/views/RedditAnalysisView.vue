@@ -3,7 +3,7 @@
     <!-- Navigation -->
     <nav class="flex justify-between items-center px-8 py-6 bg-gray-900/80 backdrop-blur-sm border-b border-gray-700/50">
       <div class="flex items-center gap-4">
-        <button @click="$router.go(-1)" class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+        <button @click="router.go(-1)" class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
@@ -30,7 +30,7 @@
 
     <!-- Header Section -->
     <section class="px-8 py-12">
-      <div class="max-w-7xl mx-auto">
+      <div class="max-w-7.5xl mx-auto">
         <div class="text-center mb-12">
           <h1 class="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent">
             Reddit Analysis Dashboard
@@ -126,9 +126,12 @@
               </div>
 
               <div v-else-if="trendingTickers?.length" class="space-y-3">
-                <div v-for="(ticker, index) in trendingTickers" :key="ticker.symbol"
-                     class="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg hover:bg-gray-700/50 transition-all duration-200 cursor-pointer"
-                     @click="navigateToTicker(ticker.symbol)">
+                <div
+                    v-for="(ticker, index) in trendingTickers"
+                    :key="ticker.symbol"
+                    class="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg hover:bg-gray-700/50 transition-all duration-200 cursor-pointer"
+                    @click="navigateToTicker(ticker.symbol ?? '')"
+                >
                   <div class="flex items-center gap-3">
                     <div class="flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold"
                          :class="getRankColor(index + 1)">

@@ -26,6 +26,9 @@ module.exports = {
     },
     extend: {
       colors: {
+        maxWidth: {
+          '7.5xl': '80rem',
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -82,4 +85,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms")],
-} 
+}

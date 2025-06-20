@@ -23,7 +23,7 @@
 
     <!-- Hero Section with Search -->
     <section class="px-8 py-16 text-center">
-      <div class="max-w-4xl mx-auto">
+      <div class="max-w-7.5xl mx-auto">
         <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent">
           Stock Market Intelligence
         </h1>
@@ -62,7 +62,7 @@
             </span>
             <span v-else>Search</span>
           </button>
-          
+
           <!-- Error Message -->
           <div v-if="searchError" class="absolute top-full left-0 right-0 mt-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg backdrop-blur-sm">
             <div class="flex items-center gap-2 text-red-400 text-sm">
@@ -90,10 +90,10 @@
 
     <!-- Main Content Grid -->
     <section class="px-8 py-12">
-      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
+      <div class="max-w-7.5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+
         <!-- Reddit Sentiment Component -->
-        <RedditSentiment 
+        <RedditSentiment
           @ticker-click="handleTickerClick"
           @view-full-analysis="handleViewFullAnalysis"
         />
