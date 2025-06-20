@@ -53,7 +53,11 @@ public class SecurityConfiguration {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/").permitAll()
+            // Reddit API endpoints - publicly accessible
+            .requestMatchers(HttpMethod.GET, "/api/reddit/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/reddit/collect").permitAll() // For manual data collection
+            
+            // Existing permitted endpoints
             .requestMatchers(HttpMethod.GET, "/api/articles", "/api/articles/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/map-points", "/api/map-points/**")
             .permitAll()

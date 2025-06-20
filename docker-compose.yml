@@ -1,4 +1,4 @@
-version: '3.8'
+# Removed version (obsolete)
 
 services:
   mysql:
@@ -10,10 +10,36 @@ services:
       MYSQL_USER: sa
       MYSQL_PASSWORD: password
     ports:
-      - "3307:3306"
+      - "3307:3306"  # External:Internal
     volumes:
       - mysql_data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - stockevaluator-network
+
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: stockevaluator-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/stockevaluator
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: password
+      REDDIT_CLIENT_ID: AB5d0hlCbKStllHtKYOdDQ
+      REDDIT_CLIENT_SECRET: JMjWlCVjqs_U8qS9VTie7CJsPtDnVQ
+      REDDIT_USERNAME: BigCucumber2565
+      REDDIT_PASSWORD: Shiza2004!
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - stockevaluator-network
 
 volumes:
   mysql_data:
+
+networks:
+  stockevaluator-network:
+    driver: bridge

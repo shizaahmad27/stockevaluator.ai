@@ -17,3 +17,8 @@ export * from "./registerResponse";
 export * from "./userLocationRequest";
 export * from "./userResponse";
 export * from "./verifyEmailParams";
+export * from "./jsonNode";
+export * from "./redditComment";
+export * from "./redditPost";
+export * from "./searchTickersParams";
+export * from "./ticker";
