@@ -3,8 +3,7 @@
     <!-- Navigation -->
     <nav class="flex justify-between items-center px-8 py-6 bg-gray-900/80 backdrop-blur-sm border-b border-gray-700/50">
       <div class="flex items-center gap-4">
-        <button @click="$router.go(-1)" class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button @click="router.go(-1)" class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors">          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
         </button>
@@ -50,7 +49,7 @@
         </p>
         <div class="space-x-4">
           <button
-              @click="$router.go(-1)"
+              @click="router.go(-1)"
               class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
           >
             Go Back
@@ -125,10 +124,11 @@
                 </svg>
                 Recent Posts
               </h3>
-              <button @click="refetchPosts" class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
-                <svg class="w-5 h-5" :class="{ 'animate-spin': isLoadingPosts }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                </svg>
+              <button
+                  class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                  @click="() => refetchPosts()"
+              >
+                Refresh Posts
               </button>
             </div>
 
@@ -171,10 +171,11 @@
                 </svg>
                 Recent Comments
               </h3>
-              <button @click="refetchComments" class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
-                <svg class="w-5 h-5" :class="{ 'animate-spin': isLoadingComments }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                </svg>
+              <button
+                  class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+                  @click="() => refetchComments()"
+              >
+                Refresh Comments
               </button>
             </div>
 

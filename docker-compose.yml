@@ -18,7 +18,9 @@ services:
       - stockevaluator-network
 
   app:
-    build: .
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: stockevaluator-app
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/stockevaluator
