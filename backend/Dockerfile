@@ -19,8 +19,8 @@ RUN ls -la target/
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 
-# Copy the JAR file from build stage (find any .jar file that's not original)
-COPY --from=build /workspace/app/target/*-SNAPSHOT.jar app.jar
+# Copy the specific JAR file from build stage
+COPY --from=build /workspace/app/target/stock-evaluator-backend-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose port
 EXPOSE 8080
