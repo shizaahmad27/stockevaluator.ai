@@ -7,13 +7,20 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 
-RUN ./mvnw install -DskipTests
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+# Make mvnw executable
+RUN chmod +x ./mvnw
+
+# Build the JAR file
+RUN ./mvnw clean package -DskipTests
 
 FROM eclipse-temurin:17-jre
-VOLUME /tmp
-ARG DEPENDENCY=/workspace/app/target/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","stockevaluator.StockEvaluatorApplication"]
+WORKDIR /app
+
+# Copy the JAR file from build stage
+COPY --from=build /workspace/app/target/*.jar app.jar
+
+# Expose port
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
