@@ -13,11 +13,14 @@ RUN chmod +x ./mvnw
 # Build the JAR file
 RUN ./mvnw clean package -DskipTests
 
+# List the target directory to see what was created (for debugging)
+RUN ls -la target/
+
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 
-# Copy the JAR file from build stage
-COPY --from=build /workspace/app/target/*.jar app.jar
+# Copy the JAR file from build stage (find any .jar file that's not original)
+COPY --from=build /workspace/app/target/*-SNAPSHOT.jar app.jar
 
 # Expose port
 EXPOSE 8080
