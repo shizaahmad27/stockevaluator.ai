@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Navbar from './components/layout/Navbar.vue'
+import Footer from './layout/Footer.vue'
 import { Toast } from './components/ui/toast'
 </script>
 
@@ -7,6 +7,8 @@ import { Toast } from './components/ui/toast'
 
   <router-view />
   <Toast />
+  <Footer />
+
 </template>
 
 <style>

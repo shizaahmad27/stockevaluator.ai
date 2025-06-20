@@ -113,19 +113,19 @@
                 </button>
               </div>
 
-              <div v-if="isLoadingTickers" class="space-y-4">
+              <div v-if="isLoadingTickers" class="space-y-3 max-h-96 overflow-y-auto">
                 <div v-for="i in 5" :key="i" class="animate-pulse">
                   <div class="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg">
                     <div class="flex items-center gap-3">
-                      <div class="w-12 h-6 bg-gray-600 rounded"></div>
-                      <div class="w-20 h-4 bg-gray-600 rounded"></div>
+                      <div class="w-8 h-8 bg-gray-600 rounded-full"></div>
+                      <div class="w-16 h-4 bg-gray-600 rounded"></div>
                     </div>
-                    <div class="w-16 h-6 bg-gray-600 rounded"></div>
+                    <div class="w-20 h-4 bg-gray-600 rounded"></div>
                   </div>
                 </div>
               </div>
 
-              <div v-else-if="trendingTickers?.length" class="space-y-3">
+              <div v-else-if="trendingTickers?.length" class="space-y-3 max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
                 <div
                     v-for="(ticker, index) in trendingTickers"
                     :key="ticker.symbol"
