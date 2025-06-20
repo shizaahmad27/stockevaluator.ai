@@ -53,6 +53,7 @@ public class SecurityConfiguration {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/articles", "/api/articles/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/map-points", "/api/map-points/**")
             .permitAll()

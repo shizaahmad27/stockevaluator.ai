@@ -51,6 +51,7 @@
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/email/exception/EmailSendingException.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/user/exception/EmailAlreadyExistsException.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/config/SecurityConfiguration.java
+/Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/config/JwtAuthenticationEntryPoint.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/user/dto/UserResponse.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/exception/TwoFactorAuthRequiredException.java
 /Users/shizaahmad/Desktop/Skrivebord – Shizas MacBook Pro/stockevaluator.ai/backend/src/main/java/stockevaluator/auth/dto/RegisterRequest.java
