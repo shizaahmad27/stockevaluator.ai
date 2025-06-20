@@ -1,25 +1,44 @@
-name: stockevaluator-ai
+name: stockevaluator-backend
 services:
 - name: backend
+  source_dir: /
   github:
+    repo: your-username/stockevaluator.ai
     branch: main
-    deploy_on_push: true
-    repo: shizaahmad27/stockevaluator.ai
-  build_command: ./mvnw clean package -DskipTests
-  run_command: java -jar target/stock-evaluator-backend-0.0.1-SNAPSHOT.jar
-  http_port: 8080
+  run_command: java -cp app:app/lib/* stockevaluator.StockEvaluatorApplication
+  environment_slug: java
   instance_count: 1
   instance_size_slug: basic-xxs
+  http_port: 8080
+  routes:
+  - path: /
   envs:
   - key: SPRING_PROFILES_ACTIVE
     value: prod
   - key: SERVER_PORT
     value: "8080"
   - key: SPRING_DATASOURCE_URL
-    value: ${db.DATABASE_URL}
+    value: ${DATABASE_URL}
   - key: SPRING_DATASOURCE_USERNAME
-    value: ${db.DATABASE_USERNAME}
+    value: ${DATABASE_USERNAME}
   - key: SPRING_DATASOURCE_PASSWORD
-    value: ${db.DATABASE_PASSWORD}
-  routes:
-  - path: / 
+    value: ${DATABASE_PASSWORD}
+  - key: JWT_SECRET
+    value: ${JWT_SECRET}
+  - key: REDDIT_CLIENT_ID
+    value: ${REDDIT_CLIENT_ID}
+  - key: REDDIT_CLIENT_SECRET
+    value: ${REDDIT_CLIENT_SECRET}
+  - key: REDDIT_USERNAME
+    value: ${REDDIT_USERNAME}
+  - key: REDDIT_PASSWORD
+    value: ${REDDIT_PASSWORD}
+  - key: FRONTEND_URL
+    value: ${FRONTEND_URL}
+  health_check:
+    http_path: /health
+    initial_delay_seconds: 30
+    period_seconds: 10
+    timeout_seconds: 5
+    success_threshold: 1
+    failure_threshold: 3 
