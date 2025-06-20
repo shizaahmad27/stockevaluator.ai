@@ -1,41 +1,21 @@
-import { useGetTrendingTickers, useGetAllPosts, useGetPostsByTicker, useGetCommentsByPostId } from '@/generated/api/reddit-controller';
+import { 
+    useGetTrendingTickers, 
+    useGetRecentPosts, 
+    useGetPostsByTicker, 
+    useGetCommentsByPost,
+    getTrendingTickers,
+    getRecentPosts,
+    getPostsByTicker,
+    getCommentsByPost
+} from '@/api/generated/reddit-controller/reddit-controller';
+import type { RedditPost, RedditComment, Ticker } from '@/api/generated/model';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
-
-export interface RedditPost {
-    id: string;
-    title: string;
-    content: string;
-    author: string;
-    score: number;
-    commentsCount: number;
-    createdDate: string;
-    tickerMentions: string[];
-}
-
-export interface RedditComment {
-    id: string;
-    postId: string;
-    content: string;
-    author: string;
-    score: number;
-    createdDate: string;
-    tickerMentions: string[];
-}
-
-export interface Ticker {
-    symbol: string;
-    companyName: string;
-    mentionCount: number;
-    sentimentScore: number;
-    trendingScore: number;
-}
-
+// React Query hooks for components (with caching, loading states, etc.)
 export const useRedditService = () => {
     const { data: trendingTickers, isLoading: isLoadingTickers } = useGetTrendingTickers();
-    const { data: allPosts, isLoading: isLoadingPosts } = useGetAllPosts();
-    const { data: postsByTicker, isLoading: isLoadingPostsByTicker } = useGetPostsByTicker();
-    const { data: commentsByPost, isLoading: isLoadingComments } = useGetCommentsByPostId();
+    const { data: allPosts, isLoading: isLoadingPosts } = useGetRecentPosts();
+    const { data: postsByTicker, isLoading: isLoadingPostsByTicker } = useGetPostsByTicker('');
+    const { data: commentsByPost, isLoading: isLoadingComments } = useGetCommentsByPost('');
 
     return {
         trendingTickers,
@@ -49,29 +29,21 @@ export const useRedditService = () => {
     };
 };
 
+// Direct API functions for programmatic use (no caching, just raw API calls)
 export const redditService = {
     async getAllPosts(): Promise<RedditPost[]> {
-        const response = await axios.get(`${API_URL}/reddit/posts`);
-        return response.data;
+        return await getRecentPosts();
     },
 
     async getPostsByTicker(ticker: string): Promise<RedditPost[]> {
-        const response = await axios.get(`${API_URL}/reddit/posts/${ticker}`);
-        return response.data;
+        return await getPostsByTicker(ticker);
     },
 
     async getCommentsByPostId(postId: string): Promise<RedditComment[]> {
-        const response = await axios.get(`${API_URL}/reddit/comments/${postId}`);
-        return response.data;
-    },
-
-    async getAllTickers(): Promise<Ticker[]> {
-        const response = await axios.get(`${API_URL}/reddit/tickers`);
-        return response.data;
+        return await getCommentsByPost(postId);
     },
 
     async getTrendingTickers(): Promise<Ticker[]> {
-        const response = await axios.get(`${API_URL}/reddit/tickers/trending`);
-        return response.data;
+        return await getTrendingTickers();
     }
-}; 
+};
