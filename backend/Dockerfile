@@ -1,22 +1,27 @@
-# Use platform-compatible images
+# Stage 1: Build the application using Maven
 FROM eclipse-temurin:17-jdk AS build
-WORKDIR /workspace/app
+WORKDIR /app
 
-COPY backend/mvnw .
-COPY backend/.mvn .mvn
-COPY backend/pom.xml .
-COPY backend/src src
+# Copy the Maven wrapper and project definition
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 
-RUN ./mvnw install -DskipTests
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+# Copy the source code
+COPY src ./src
 
-FROM eclipse-temurin:17-jre
-# Remove VOLUME command - Railway handles volumes differently
-# VOLUME /tmp
+# Build the application, creating the executable JAR
+RUN ./mvnw clean package -DskipTests
 
-ARG DEPENDENCY=/workspace/app/target/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
+# Stage 2: Create the final, smaller production image
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
 
-ENTRYPOINT ["java","-cp","app:app/lib/*","stockevaluator.StockEvaluatorApplication"]
+# Copy the built JAR from the 'build' stage
+COPY --from=build /app/target/stock-evaluator-backend-0.0.1-SNAPSHOT.jar app.jar
+
+# Expose the port the application will run on
+EXPOSE 8080
+
+# The command to start the application when the container launches
+ENTRYPOINT ["java", "-jar", "app.jar"]
