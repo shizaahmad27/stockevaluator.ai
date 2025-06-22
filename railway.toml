@@ -1,6 +1,7 @@
 [build]
+# Specifies the path to the Dockerfile, relative to the project root.
+# The build context now defaults to the project root, which is more explicit.
 dockerfilePath = "backend/Dockerfile"
-dockerBuildContext = "backend"
 
 [deploy]
 healthcheckPath = "/actuator/health"
