@@ -2,28 +2,21 @@
 FROM eclipse-temurin:17-jdk AS build
 WORKDIR /workspace/app
 
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
-COPY src src
+COPY backend/mvnw .
+COPY backend/.mvn .mvn
+COPY backend/pom.xml .
+COPY backend/src src
 
-# Make mvnw executable
-RUN chmod +x ./mvnw
-
-# Build the JAR file
-RUN ./mvnw clean package -DskipTests
-
-# List the target directory to see what was created (for debugging)
-RUN ls -la target/
+RUN ./mvnw install -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 FROM eclipse-temurin:17-jre
-WORKDIR /app
+# Remove VOLUME command - Railway handles volumes differently
+# VOLUME /tmp
 
-# Copy the specific JAR file from build stage
-COPY --from=build /workspace/app/target/stock-evaluator-backend-0.0.1-SNAPSHOT.jar app.jar
+ARG DEPENDENCY=/workspace/app/target/dependency
+COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
+COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 
-# Expose port
-EXPOSE 8080
-
-# Run the application
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java","-cp","app:app/lib/*","stockevaluator.StockEvaluatorApplication"]

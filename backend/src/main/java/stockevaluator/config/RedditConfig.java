@@ -52,6 +52,11 @@ public class RedditConfig {
 
     @Scheduled(fixedRate = 3600000)
     public void refreshAccessToken() {
+        if (clientId == null || clientId.isEmpty() || clientSecret == null || clientSecret.isEmpty()) {
+            System.err.println("Warning: Reddit API credentials are not configured. Skipping token refresh.");
+            return;
+        }
+
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPost request = new HttpPost("https://www.reddit.com/api/v1/access_token");
 
