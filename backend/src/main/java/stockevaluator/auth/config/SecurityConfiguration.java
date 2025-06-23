@@ -55,34 +55,23 @@ public class SecurityConfiguration {
         .authorizeHttpRequests(auth -> auth
             // Reddit API endpoints - publicly accessible
             .requestMatchers(HttpMethod.GET, "/api/reddit/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/reddit/collect").permitAll() // For manual data collection
+            .requestMatchers(HttpMethod.POST, "/api/reddit/collect").permitAll() 
             
             // Existing permitted endpoints
-            .requestMatchers(HttpMethod.GET, "/api/articles", "/api/articles/**").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/map-points", "/api/map-points/**")
-            .permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/scenarios", "/api/scenarios/**")
-            .permitAll()
+      
             .requestMatchers("/ws/**")
             .permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/map-point-types", "/api/map-point-types/**")
-            .permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/events", "/api/events/**").permitAll()
+           
             .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh",
                 "/api/auth/request-password-reset", "/api/auth/complete-password-reset")
             .permitAll()
             .requestMatchers(HttpMethod.POST, "/api/email/**", "/api/auth/verify-email",
-                "/api/auth/verify-password-reset", "/api/auth/verify-admin-login").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/auth/verify-admin-invite").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/reflections/public",
-                "/api/reflections/public/**").permitAll()
-
+                "/api/auth/verify-password-reset").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/auth/register/admin",
                 "/api/auth/admin/reset-password-link").permitAll()
             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/reflections/public", "/api/reflections/event/**")
-            .permitAll()
+
             .anyRequest().authenticated())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -102,8 +91,11 @@ public class SecurityConfiguration {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of(frontendConfig.getUrl()));
-    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    String origin = frontendConfig.getUrl();
+    if (origin == null || origin.isBlank()) {
+        origin = "http://localhost:5173";
+    }
+    configuration.setAllowedOrigins(List.of(origin));    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(List.of("*"));
     configuration.setAllowCredentials(true);
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
