@@ -63,8 +63,8 @@ public class RedditConfig {
             String credentials = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
             request.setHeader("Authorization", "Basic " + credentials);
             request.setHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.setHeader("User-Agent", "StockEvaluator/1.0.0");
-
+            request.setHeader("User-Agent", "StockEvaluator/1.0 (by /u/BigCucumber2565)");
+            request.setHeader("Accept", "application/json");
             StringEntity entity = new StringEntity("grant_type=password&username=" + username + "&password=" + password);
             request.setEntity(entity);
 
