@@ -1,3 +1,30 @@
+# Stock Evaluator
+
+Stock Evaluator is a web application designed to evaluate stock market data and provide insights using various APIs and tools. The project is built using **Java**, **Spring Boot**, **MySQL**, and **Docker**. It also integrates with external APIs like Reddit and Alpha Vantage for additional data.
+
+---
+
+## Features
+
+- **User Authentication**: Login and signup functionality with JWT-based authentication.
+- **Stock Analysis**: Fetch and display stock data using the Alpha Vantage API.
+- **Reddit Integration**: Retrieve and analyze Reddit posts related to stocks.
+- **Database Management**: Persistent storage of user and stock data using MySQL.
+- **Health Monitoring**: Exposes health check endpoints for monitoring the backend.
+- **CORS Support**: Configurable CORS settings for frontend-backend communication.
+
+---
+
+## Prerequisites
+
+- **Java 17+**
+- **Maven 3.8+**
+- **Docker & Docker Compose**
+- **Node.js** (for frontend, if applicable)
+
+---
+
+## Project Structure
 # Stock Evaluator Backend
 
 This is the backend service for the Stock Evaluator AI application, built with Spring Boot.
